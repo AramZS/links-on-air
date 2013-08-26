@@ -2,7 +2,7 @@
 /*
 Plugin Name: Links on Air
 Plugin URI: http://onair.cc/
-Description: This plugin is a tool for portable internal crosslinking.
+Description: This WP plugin is a tool for portable internal crosslinking.
 Version: 0.0.1
 Author: Aram Zucker-Scharff
 Author URI: http://aramzs.me
