@@ -163,6 +163,8 @@ class LinksOnAir {
 		ob_end_clean();
 		return $output;
 	}
+	
+	#Still need to set up options, ability to set default, and a content filter to apply to all links. Also need to set up a method to verify that the link is local. Should be able to do it by calling the site URL and using strpos.
 
 }
 
