@@ -35,6 +35,120 @@ define( 'LA_URL', plugins_url('/', __FILE__) );
 
 class LinksOnAir {
 
+	// See http://php.net/manual/en/language.oop5.decon.php to get a better understanding of what's going on here.
+	function __construct() {
+		add_shortcode('airlink', array($this, 'shortcode_linker'));
+	}
+	
+	function shortcode_linker($args, $content = null){
+		ob_start();
+		extract( shortcode_atts( array(
+			'ref' => '#',
+			'target' => '_self',
+			'title' => 'Internal link',
+			'type' => 'direct',
+			'class' => 'airlink',
+			'id' => ''
+		), $atts ) );		
+		
+		$detected = 'direct';
+		$dType = 'direct';
+		
+		#Determine type, start with default, then check user setting, then any declared in args.
+		$oType = get_option(LA_SLUG . '_link_type');
+		if (isset($oType)){
+			$dType = $oType;
+		}
+		
+		if (isset($type)){
+			switch($type){
+				case 'direct':					
+					$aType = 'direct';
+					break;
+				case 'relative':
+					$aType = 'relative';
+					break;
+				case 'rel':
+					$aType = 'relative';
+					break;
+			}
+			if ($type != ('direct' || 'relative')){
+				$type = $dType;
+			} else {
+				$type = $aType;
+			}
+		}
+		
+		if (!isset($type)){
+			$type = $dType;
+		}
+		
+		# Case: Anchor link.
+		if (0 === strpos($ref, "#")) {
+			$ref = $ref;
+			$detected = 'anchor';
+		} 
+		# Case: relative link
+		elseif (0 === strpos($ref, "/")) {
+			
+			$detected = 'relative';
+		}
+		# Case: Direct link
+		elseif (((0 === strpos($ref, "www."))) || (0 === strpos($ref, "http://"))) {
+		
+			$detected = 'direct';
+		}
+		# Case: Post ID
+		elseif (is_numeric($ref)) {
+			
+			$detected = 'pid';
+		}
+		# Case: slug
+		elseif (is_string($ref)) {
+		
+			$detected = 'slug';
+		}
+		# Case: other
+		else {
+			$ref = $ref;
+			$detected = 'other';
+		}
+		
+		switch ($type) {
+			case 'direct':
+				switch ($detected) {
+					case 'relative':
+						break;
+					case 'direct':
+						break;
+					case 'pid':
+						break;
+					case 'slug':
+						break;
+				}
+				break;
+			case 'relative':
+				switch ($detected) {
+					case 'relative':
+						break;
+					case 'direct':
+						break;
+					case 'pid':
+						break;
+					case 'slug':
+						break;
+				}
+				break;
+		}
+		
+		#ref can be hyperlink, unique number ID, or slug
+		$output= '<a href="'.$ref.'" target="'.$target.'" title="'.$title.'" class="'.$class.'" id="'.$id.'" >' . $content . '</a>';
+		
+		$error = $ob_get_contents();
+		ob_end_clean();
+		return $output;
+	}
+
 }
 
 /**
