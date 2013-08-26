@@ -48,7 +48,8 @@ class LinksOnAir {
 			'title' => 'Internal link',
 			'type' => 'direct',
 			'class' => 'airlink',
-			'id' => ''
+			'id' => '',
+			'posttype' => 'post'
 		), $atts ) );		
 		
 		$detected = 'direct';
@@ -118,24 +119,38 @@ class LinksOnAir {
 			case 'direct':
 				switch ($detected) {
 					case 'relative':
+						$pObj = get_page_by_path($ref, OBJECT, $posttype);
+						$ref = get_post_permalink($pObj->ID);
 						break;
 					case 'direct':
+						$postid = url_to_postid( $ref );
+						$ref = get_post_permalink($postid);	
 						break;
 					case 'pid':
+						$ref = get_post_permalink($ref);
 						break;
 					case 'slug':
+						$pObj = get_page_by_path($ref, OBJECT, $posttype);
+						$ref = get_post_permalink($pObj->ID);							
 						break;
 				}
 				break;
 			case 'relative':
 				switch ($detected) {
 					case 'relative':
+						$pObj = get_page_by_path($ref, OBJECT, $posttype);
+						$ref = get_page_uri($pObj->ID);							
 						break;
 					case 'direct':
+						$postid = url_to_postid( $ref );
+						$ref = get_page_uri($postid);
 						break;
 					case 'pid':
+						$ref = get_page_uri($ref);
 						break;
 					case 'slug':
+						$pObj = get_page_by_path($ref, OBJECT, $posttype);
+						$ref = get_page_uri($pObj->ID);					
 						break;
 				}
 				break;
